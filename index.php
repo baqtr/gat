@@ -2,14 +2,20 @@
 
 ob_start(); 
 $token = "7065007495:AAHbwDvC-jWbir5r0VVCGZmStA4VMKNhVNw"; # Token
-define("API_KEY",$token);
-echo file_get_contents("https://api.telegram.org/bot" . API_KEY . "/setwebhook?url=" . $_SERVER['SERVER_NAME'] . "" . $_SERVER['SCRIPT_NAME']);
+define("API_KEY", $token);
+echo "setWebhook ~> <a href=\"https://api.telegram.org/bot".API_KEY."/setwebhook?url=".$_SERVER['SERVER_NAME']."".$_SERVER['SCRIPT_NAME']."\">https://api.telegram.org/bot".API_KEY."/setwebhook?url=".$_SERVER['SERVER_NAME']."".$_SERVER['SCRIPT_NAME']."</a>";
 function bot($method,$datas=[]){
-$amrakl = http_build_query($datas);
-$url = "https://api.telegram.org/bot".API_KEY."/".$method."?$amrakl";
-$amrakl = file_get_contents($url);
-return json_decode($amrakl);
-}
+$url = "https://api.telegram.org/bot".API_KEY."/".$method;
+$ch = curl_init();
+curl_setopt($ch,CURLOPT_URL,$url);
+curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+curl_setopt($ch,CURLOPT_POSTFIELDS,$datas);
+$res = curl_exec($ch);
+if(curl_error($ch)){
+var_dump(curl_error($ch));
+}else{
+return json_decode($res);
+}}
 $update = json_decode(file_get_contents('php://input'));
 $message = $update->message;
 $chat_id2 = $update->callback_query->message->chat->id;
@@ -418,54 +424,50 @@ $message_id = $up->message->message_id;
 $mes_id = $update->callback_query->inline_message_id; 
 $data = $up->data;
 }
-if($text == '/start'){$userbot = bot("getme")->result->username;
+if($text == '/start'){
 bot('sendmessage', [
 'chat_id' => $chat_id,
-'text' => "*مرحبا بك في عالم الذكاء الاصطناعي! *
+'text' => "*مرحبا بك عزيزي 👋
 
-أنا متحمس لمعرفت المزيد عنك وما تستطيع أن تفعله. نحن متحمسون لمساعدتك في تحقيق أهدافك التكنولوجية والإبداعية.نتطلع إلى التعاون معك لإنجاز أفضل النتائج.
-*كل ما عليك ارسال سوالك*
+في البوت الاول لعمل الاسبام 🌟
+يقوم البوت بعمل ارسال رسائل ☄
+مزعجه للبريد الإلكتروني باستمرار 🎯
+كل ما عليك هوا ارسال البريد للارسال 🖲
+
+Creator : @amrakl*
 ",
 'parse_mode'=>"markdown", 
 'reply_to_message_id'=>$message->message_id,
-'reply_markup'=>json_encode(['inline_keyboard'=>[[['text'=>"اضافه البوت الي مجموعتك",'url'=>"http://t.me/$userbot?startgroup=new"]],
-]])
 ]);
 }
-if($text !="/start"){
-bot('sendChatAction', [
-'chat_id'=>$chat_id,
-'action'=>"typing"
-]);
-$waiit = bot("SendMessage",[
-"chat_id"=>$chat_id,
-"text"=>"*آنََتِٰـِۢظِٰـِۢر جِٰـِۢآريِٰ آلِٰـِۢتِٰـِۢحِٰـِۢمِٰـِۢيِٰـِۢلِٰ*",
-'parse_mode'=>"MARKDOWN",
-"reply_to_message_id"=>$message_id,
-])->result->message_id;
-$ch = curl_init();
-curl_setopt($ch,CURLOPT_URL,"https://utleg.online/API/docAI.php?text=$text");
-curl_setopt($ch,CURLOPT_TIMEOUT,$timeout);
-curl_setopt($ch,CURLOPT_POSTFIELDS,"&text=".$text);
-curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
-$result = curl_exec($ch);
-if(isset($result)){
-bot('EditMessageText',[
-'chat_id'=>$chat_id, 
-'message_id'=>$waiit,
-'text' =>$result,
+if($text != '/start'){
+if(strpos($text, "gmail.com") !== false) {
+bot('sendmessage', [
+'chat_id' => $chat_id,
+'text' => "
+*تم بدء العملية بنجاح ✅
+
+العدد : 40 🛎
+
+البريد :* [$text]
+
+*النوع خامل 🖲*
+",
+'parse_mode'=>"markdown", 
 'reply_to_message_id'=>$message->message_id,
 ]);
-}else {bot('EditMessageText',[
-'chat_id'=>$chat_id, 
-'message_id'=>$waiit,
-'text'=>"*لم افهمك حاول السؤال مرة اخر بطريقة صحيحة لكي افهمك.*",
-'parse_mode'=>markdown,
-'disable_web_page_preview'=>true,
-'reply_to_message_id'=>$message->message_id
-]); return false;
+$i = 0;
+while ($i < 10) {
+    $api = json_decode(file_get_contents("https://dev-amr1700.pantheonsite.io/Tupac/spam-Email.php?Email=$text"), 1);
+    $i++;
+}
+} else {
+bot('sendmessage', [
+'chat_id' => $chat_id,
+'text' => "*حدث خطاء ما يرجا التحقق من البريد*",
+'parse_mode'=>"markdown", 
+'reply_to_message_id'=>$message->message_id,
+]);
 }
 }
-#توباك - @amrakl
-#مستر عمرو - @BBI4BB
 ?>
